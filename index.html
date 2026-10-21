@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}</style>
+<title>Ledjockey</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Ledjockey — VJ en live visuals voor events en festivals, uit Brabant.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap">
+<style>
+/* Layout: één scrollende pagina; LED-matrix als hero, daarna smalle secties op een donkere 'ledwand' met dunne lijnen als scheiding */
+:root{
+  --bg:#08090c;        /* uitgeschakelde ledwand */
+  --panel:#111318;     /* module / kast */
+  --line:#23262e;
+  --fg:#eceae4;
+  --muted:#8d909a;
+  --yellow:#ffd21a;    /* LEDJOCKEY geel */
+  --red:#d6202a;       /* Brabants rood */
+  --display:"Impact","Anton","Haettenschweiler","Arial Narrow Bold",sans-serif;
+  --body:"Bahnschrift","Barlow","DIN Alternate","Segoe UI",sans-serif;
+  --label:"Bahnschrift","Barlow Condensed","DIN Condensed","Arial Narrow",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--yellow)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--yellow);outline-offset:3px}
+
+/* Navigatie */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.logo{font-family:var(--display);font-size:22px;letter-spacing:.04em;color:var(--fg);text-decoration:none}
+.logo span{color:var(--yellow)}
+nav{display:flex;gap:18px;flex-wrap:wrap}
+nav a{font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:var(--muted);text-decoration:none}
+nav a:hover{color:var(--yellow)}
+
+/* Hero */
+.hero{padding-block:40px 28px}
+.matrix{display:block;width:100%;aspect-ratio:16/5;max-width:100%;background:var(--bg);border:1px solid var(--line);border-radius:4px}
+.hero-text{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;margin-top:28px}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,6.4vw,64px);line-height:1;letter-spacing:.01em;margin:0;text-wrap:balance;text-transform:uppercase}
+.hero h1 em{font-style:normal;color:var(--yellow)}
+.hero p{margin:14px 0 0;max-width:56ch;color:var(--muted)}
+.cta{display:inline-block;font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:14px;padding:14px 22px;background:var(--yellow);color:#111;text-decoration:none;border-radius:2px;white-space:nowrap}
+.cta:hover{filter:brightness(1.08)}
+
+
+/* Secties */
+section{padding-block:64px;border-top:1px solid var(--line)}
+.eyebrow{font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--yellow);margin:0 0 10px}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(28px,4.4vw,42px);line-height:1.05;margin:0 0 28px;text-transform:uppercase;text-wrap:balance}
+
+.services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.service{background:var(--panel);padding:24px;min-width:0}
+.service h3{font-family:var(--label);font-weight:600;font-size:20px;text-transform:uppercase;letter-spacing:.04em;margin:0 0 8px}
+.service p{margin:0;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{font-family:var(--label);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--line);color:var(--fg);border-radius:2px}
+
+.reel{position:relative;aspect-ratio:16/9;max-width:100%;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;overflow:hidden}
+.reel canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.35}
+.reel .play{position:relative;display:grid;gap:10px;justify-items:center;text-align:center;padding:16px}
+.reel .btn{width:76px;height:76px;border-radius:50%;background:var(--yellow);display:grid;place-items:center}
+.reel .btn::after{content:"";border-left:22px solid #111;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px}
+.reel small{font-family:var(--label);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+.shows{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.shows li{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:16px;align-items:baseline;padding-block:16px;border-bottom:1px solid var(--line)}
+.shows .date{font-family:var(--label);font-variant-numeric:tabular-nums;color:var(--muted);letter-spacing:.04em}
+.shows .name{font-weight:600}
+.shows .what{color:var(--muted);font-size:15px}
+.example{font-family:var(--label);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--bg);background:var(--muted);padding:2px 6px;border-radius:2px;margin-left:8px;vertical-align:2px}
+
+.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;align-items:start}
+.contact p{color:var(--muted);margin:0 0 20px;max-width:52ch}
+.card{background:var(--panel);border:1px solid var(--line);padding:24px;display:grid;gap:16px}
+.row{display:grid;gap:2px}
+.row .k{font-family:var(--label);font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.row .v{font-size:18px;user-select:all;overflow-wrap:anywhere}
+.row .v a{color:var(--fg)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.actions .cta{flex:1 1 140px;text-align:center}
+.cta.ghost{background:transparent;color:var(--yellow);border:1px solid var(--yellow)}
+
+footer{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:720px){
+  .hero-text{grid-template-columns:1fr}
+  .services{grid-template-columns:1fr}
+  .contact{grid-template-columns:1fr}
+  .shows li{grid-template-columns:1fr;gap:2px}
+  nav{gap:12px}
+  nav a:nth-child(n+3){display:none}
+  .matrix{aspect-ratio:16/7}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#top">LED<span>JOCKEY</span></a>
+    <nav>
+      <a href="#wat">Wat ik doe</a>
+      <a href="#showreel">Showreel</a>
+      <a href="#shows">Shows</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <canvas class="matrix" id="matrix" aria-label="Ledwand met de tekst LEDJOCKEY"></canvas>
+    <div class="hero-text">
+      <div>
+        <h1>Live visuals voor <em>ledwanden</em> die meebewegen met de muziek</h1>
+        <p>VJ en live visual performer uit Brabant. Ik speel de visuals live in Resolume Arena, met eigen content uit Blender en eigen effecten in Wire.</p>
+      </div>
+      <a class="cta" href="#contact">Boek een show</a>
+    </div>
+  </div>
+
+
+  <section id="wat">
+    <div class="wrap">
+      <p class="eyebrow">Wat ik doe</p>
+      <h2>Van feesttent tot festivalpodium</h2>
+      <div class="services">
+        <div class="service">
+          <h3>Live VJ</h3>
+          <p>Visuals live gemixt op de muziek, afgestemd op de artiest en de zaal.</p>
+          <div class="tags"><span class="tag">Resolume Arena</span><span class="tag">Stream Deck</span></div>
+        </div>
+        <div class="service">
+          <h3>Ledwand-content</h3>
+          <p>Content op maat van jouw scherm: elke resolutie, elke opstelling, ook lastige vormen.</p>
+          <div class="tags"><span class="tag">Pixel mapping</span><span class="tag">Multi-screen</span></div>
+        </div>
+        <div class="service">
+          <h3>Custom content</h3>
+          <p>Eigen loops en animaties met logo's, thema's of een complete showlook voor jouw event.</p>
+          <div class="tags"><span class="tag">Blender</span><span class="tag">Resolume Wire</span></div>
+        </div>
+        <div class="service">
+          <h3>Showcontrol</h3>
+          <p>Getimede shows op timecode, gekoppeld aan licht en geluid.</p>
+          <div class="tags"><span class="tag">LTC timecode</span><span class="tag">DMX</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="showreel">
+    <div class="wrap">
+      <p class="eyebrow">Showreel</p>
+      <h2>Zo ziet het eruit</h2>
+      <div class="reel">
+        <canvas id="reelbg" aria-hidden="true"></canvas>
+        <div class="play">
+          <div class="btn" aria-hidden="true"></div>
+          <small>Showreel volgt — YouTube- of Vimeo-link</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="shows">
+    <div class="wrap">
+      <p class="eyebrow">Shows</p>
+      <h2>Waar ik heb gedraaid</h2>
+      <ul class="shows">
+        <li><span class="date">2026</span><span><span class="name">Oktoberfest</span><span class="example">voorbeeld</span><br><span class="what">Visuals voor de feesttent</span></span><span class="what">Brabant</span></li>
+        <li><span class="date">2026</span><span><span class="name">Vroeger was alles beter</span><span class="example">voorbeeld</span><br><span class="what">Eigen showlook in 8-bit pixelstijl</span></span><span class="what">Brabant</span></li>
+        <li><span class="date">2025</span><span><span class="name">Naam festival</span><span class="example">voorbeeld</span><br><span class="what">Live VJ op de main stage</span></span><span class="what">Plaats</span></li>
+        <li><span class="date">2025</span><span><span class="name">Naam event</span><span class="example">voorbeeld</span><br><span class="what">Ledwand-content op maat</span></span><span class="what">Plaats</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap contact">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h2>Een ledwand die moet knallen?</h2>
+        <p>Stuur een WhatsApp met de datum, de locatie en wat voor scherm er staat. Je hoort snel wat ik kan doen.</p>
+      </div>
+      <div class="card">
+        <div class="actions">
+          <a class="cta" href="https://wa.me/31624364286">WhatsApp</a>
+          <a class="cta ghost" href="tel:+31624364286">Bel direct</a>
+        </div>
+        <div class="row"><span class="k">Telefoon / WhatsApp</span><span class="v">06 24 36 42 86</span></div>
+        <div class="row"><span class="k">E-mail</span><span class="v"><a href="mailto:ledjockey@gmail.com">ledjockey@gmail.com</a></span></div>
+        <div class="row"><span class="k">Regio</span><span class="v">Brabant en heel Nederland</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Ledjockey — een handelsnaam van Jimmyhonderd</span>
+    <span>06 24 36 42 86 · ledjockey@gmail.com</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const css = getComputedStyle(document.documentElement);
+  const YEL = css.getPropertyValue('--yellow').trim() || '#ffd21a';
+
+  function setup(canvas, opts){
+    const ctx = canvas.getContext('2d');
+    let cols, rows, cell, lit = [], w, h;
+    function build(){
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const r = canvas.getBoundingClientRect();
+      w = Math.max(1, r.width); h = Math.max(1, r.height);
+      canvas.width = w*dpr; canvas.height = h*dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      cell = opts.cell(w);
+      cols = Math.floor(w/cell); rows = Math.floor(h/cell);
+      lit = new Array(cols*rows).fill(0);
+      if (opts.text){
+        const o = document.createElement('canvas'); o.width = cols; o.height = rows;
+        const c = o.getContext('2d');
+        c.fillStyle = '#fff'; c.textAlign='center'; c.textBaseline='middle';
+        let size = rows*0.82;
+        c.font = `${size}px Impact, Anton, sans-serif`;
+        while (c.measureText(opts.text).width > cols*0.9 && size > 4){ size -= 1; c.font = `${size}px Impact, Anton, sans-serif`; }
+        c.fillText(opts.text, cols/2, rows/2 + 1);
+        const d = c.getImageData(0,0,cols,rows).data;
+        for (let i=0;i<cols*rows;i++) lit[i] = d[i*4+3] > 110 ? 1 : 0;
+      }
+    }
+    function draw(t){
+      ctx.clearRect(0,0,w,h);
+      const ox = (w - cols*cell)/2, oy = (h - rows*cell)/2, rad = cell*0.36;
+      for (let y=0;y<rows;y++) for (let x=0;x<cols;x++){
+        const on = lit[y*cols+x];
+        const wave = 0.5 + 0.5*Math.sin(x*0.18 - t*0.0022 + y*0.12);
+        let col, a;
+        if (on){
+          const hue = 48 - wave*14; // geel naar oranje
+          col = `hsl(${hue} 100% ${52 + wave*12}%)`; a = 1;
+        } else {
+          const spark = opts.ambient ? Math.max(0, Math.sin(x*0.7 + y*1.3 + t*0.0015)) : 0;
+          col = spark > 0.985 ? YEL : '#1a1d24'; a = spark > 0.985 ? 0.7 : 1;
+        }
+        ctx.globalAlpha = a; ctx.fillStyle = col;
+        ctx.beginPath(); ctx.arc(ox + x*cell + cell/2, oy + y*cell + cell/2, rad, 0, Math.PI*2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+    build(); draw(0);
+    new ResizeObserver(()=>{ build(); draw(performance.now()); }).observe(canvas);
+    if (!reduce){
+      (function loop(t){ draw(t); requestAnimationFrame(loop); })(0);
+    }
+  }
+
+  const go = () => {
+    setup(document.getElementById('matrix'), { text:'LEDJOCKEY', ambient:true, cell:w => Math.max(6, Math.round(w/110)) });
+    setup(document.getElementById('reelbg'), { ambient:true, cell:w => Math.max(10, Math.round(w/48)) });
+  };
+  (document.fonts && document.fonts.ready) ? document.fonts.ready.then(go) : go();
+})();
+</script>
+</body>
+</html>
